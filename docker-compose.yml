@@ -1,0 +1,23 @@
+version: "3.9"
+services:
+  tutorial:
+    build:
+      context: .
+      dockerfile: docker/tutorial/tutorial.Dockerfile
+
+    image: tutorial:$USERNAME
+    user: ${FIXUID:?}:${FIXGID:?}
+    volumes:
+      - ./src/tutorial:/home/docker/tutorial
+      - /mnt/wato-drive2/wato-datasets/waymo/motion/:/waymo/motion
+    environment:
+      - NVIDIA_DISABLE_REQUIRE=1
+    ipc: host
+    tty: true
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            device_ids: ['0']
+            capabilities: [gpu]
